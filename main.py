@@ -15,11 +15,11 @@ def load_model():
 model = load_model()
 
 def predict_digit(image):
-    array1 = (np.array(image.getdata()).reshape((28,28)) - 255) * -1
+    array1 = abs((np.array(image.getdata()).reshape((28,28)) - 255)) 
     # array1 = (np.array(image.getdata()).reshape((28,28)) ) 
-    final_img_data = np.expand_dims(array1, axis=0) / 255.0
+    final_img_data = (np.expand_dims(array1, axis=0) / 255.0)
     
-    print(array1, array1.shape)
+    # print(final_img_data, final_img_data.shape)
 
     prediction = model.predict(final_img_data)
 
