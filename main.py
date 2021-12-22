@@ -15,16 +15,18 @@ def load_model():
 model = load_model()
 
 def predict_digit(image):
-    array1 = (np.array(img1.getdata()).reshape((28,28)) - 225) * -1
-
-    reshaped = array1.reshape(28,28)
-    final_img_data = np.expand_dims(reshaped, axis=0) / 255.0
+    array1 = (np.array(image.getdata()).reshape((28,28)) - 255) * -1
+    # array1 = (np.array(image.getdata()).reshape((28,28)) ) 
+    final_img_data = np.expand_dims(array1, axis=0) / 255.0
+    
+    print(array1, array1.shape)
 
     prediction = model.predict(final_img_data)
 
-    plt.imshow(array1)
     print('Prediction:', np.argmax(prediction))
     print('Output Array:', prediction)
+    return np.argmax(prediction), prediction
+
 
 stroke_width = st.sidebar.slider("Stroke width: ", 1, 10)
 drawing_mode = st.sidebar.selectbox(
@@ -44,10 +46,15 @@ canvas_result = st_canvas(
 
 if canvas_result.image_data is not None:
     data = canvas_result.image_data
-    gray_image = 255 - data[:, :, 3]
-    # Image.fromarray(data)
-    format_image = Image.fromarray(gray_image).convert('F')
+    gray_image = (255 - data[:, :, 3])
+    # print(gray_image.shape, type(gray_image))
+    
+    format_image = Image.fromarray(gray_image).convert('F').resize((28,28))
+    # print(format_image.getdata())
 
-    print(format_image)
     # gray_image = ImageOps.grayscale((init_image))
     # print((gray_image))
+    if st.button('Predict'):
+        number, softmax = predict_digit(format_image)
+        st.write(f'`Prediction: {number}`')
+        st.write(f'`Confidence: {int(softmax[0][number]*100)}%`')
