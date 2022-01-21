@@ -12,7 +12,9 @@ st.markdown('Use a neural network to read digits as they are drawn in real time'
 def load_model():
     return tf.keras.models.load_model('notebooks/digit_model1.h5')
 
-model = load_model()
+model = load_model() # Cached model
+
+
 
 def predict_digit(image):
     array1 = abs((np.array(image.getdata()).reshape((28,28)) - 255)) 
