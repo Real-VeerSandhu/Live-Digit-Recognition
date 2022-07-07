@@ -10,11 +10,9 @@ st.markdown('Use a neural network to read digits as they are drawn in real time'
 
 @st.cache(allow_output_mutation=True, show_spinner=True, hash_funcs={"MyUnhashableClass": lambda _: None})
 def load_model():
-    return tf.keras.models.load_model('notebooks/digit_model1.h5')
+    return tf.keras.models.load_model('notebooks/trained_digit_model.h5')
 
 model = load_model() # Cached model
-
-
 
 def predict_digit(image):
     array1 = abs((np.array(image.getdata()).reshape((28,28)) - 255)) 
@@ -41,13 +39,15 @@ canvas_result = st_canvas(
     stroke_color=hex(00000),
     background_color=0,
     update_streamlit=True,
-    height=400,
+    height=500,
     drawing_mode=drawing_mode,
     key="canvas",
 )
 
-if canvas_result.image_data is not None:
+# if canvas_result.image_data is not None:
+if st.button('Predict'):
     data = canvas_result.image_data
+    print(data)
     gray_image = (255 - data[:, :, 3])
     # print(gray_image.shape, type(gray_image))
     
@@ -56,7 +56,7 @@ if canvas_result.image_data is not None:
 
     # gray_image = ImageOps.grayscale((init_image))
     # print((gray_image))
-    if st.button('Predict'):
-        number, softmax = predict_digit(format_image)
-        st.write(f'`Prediction: {number}`')
-        st.write(f'`Confidence: {int(softmax[0][number]*100)}%`')
+    
+    number, softmax = predict_digit(format_image)
+    st.write(f'`Prediction: {number}`')
+    st.write(softmax)
